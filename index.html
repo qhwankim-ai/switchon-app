@@ -1837,13 +1837,13 @@
     const APP_TITLE = "스위치온 루틴";
     const STORAGE_KEY = "switchon-routine-v1";
     const MEALS = [
-      { id: "meal1", time: "10:00", label: "오전 단백질" },
-      { id: "meal2", time: "13:30", label: "점심" },
-      { id: "meal3", time: "17:00", label: "오후 단백질" },
-      { id: "meal4", time: "19:30", label: "저녁" }
+      { id: "meal1", time: "10:00", label: "단백질 섭취", caption: "공복을 깨는 가벼운 단백질 중심 식사" },
+      { id: "meal2", time: "13:00", label: "점심", caption: "일반식 기반으로 균형 있게 먹는 메인 식사" },
+      { id: "meal3", time: "16:30", label: "단백질 보충", caption: "포만감 유지 및 근손실 방지를 위한 보충 섭취" },
+      { id: "meal4", time: "19:30", label: "저녁", caption: "늦은 야식을 막기 위해 가볍게 마무리하는 식사" }
     ];
     const MEAL_TIME_PRESETS = {
-      standard: { meal1: "10:00", meal2: "13:30", meal3: "17:00", meal4: "19:30" },
+      standard: { meal1: "10:00", meal2: "13:00", meal3: "16:30", meal4: "19:30" },
       flexible: { meal1: "08:00", meal2: "12:00", meal3: "16:00", meal4: "19:30" }
     };
     const RULES = [
@@ -2049,7 +2049,7 @@
         summary: "1~3일차와 4~7일차를 구분해 부담을 조절하는 적응 주간입니다.",
         points: [
           "1~3일차는 기본 권장 구간이며 당질 제한을 가장 강하게 둡니다.",
-          "오전·오후 단백질 2회와 점심·저녁 2회 구조를 유지합니다.",
+          "단백질 섭취·보충 2회와 점심·저녁 2회 구조를 유지합니다.",
           "4~7일차부터는 점심 1회를 일반식으로 두고 밥을 포함할 수 있습니다.",
           "숙련자는 1일차를 24시간 단식처럼 운영할 수 있지만 선택 사항입니다.",
           "무조건 버티기보다 구조를 유지하는 것이 더 중요합니다."
@@ -2153,7 +2153,7 @@
           { meal: "연어 + 구운 채소 + 고구마 소량", description: "준비기에는 몸을 겁주지 않고 리듬을 정리합니다.", ingredients: ["연어", "채소", "고구마"] }
         ],
         meal4: [
-          { meal: "프로틴 쉐이크", description: "14시간 공복을 준비하려면 오후 단백질 슬롯이 안정적이어야 합니다.", ingredients: ["프로틴 파우더"] },
+          { meal: "프로틴 쉐이크", description: "14시간 공복을 준비하려면 단백질 보충 슬롯이 안정적이어야 합니다.", ingredients: ["프로틴 파우더"] },
           { meal: "두유 무가당 + 프로틴", description: "당이 낮은 형태로 단순하게 유지합니다.", ingredients: ["무가당 두유", "프로틴 파우더"] }
         ],
         meal5: [
@@ -2175,7 +2175,7 @@
           { meal: "연두부 + 계란 + 고식이섬유 채소", description: "1~3일차는 기본 권장 구간일 뿐 절대 구간은 아닙니다.", ingredients: ["연두부", "계란", "채소"] }
         ],
         meal4: [
-          { meal: "프로틴 쉐이크", description: "오전 단백질 슬롯으로 과한 허기를 막습니다.", ingredients: ["프로틴 파우더"] },
+          { meal: "프로틴 쉐이크", description: "단백질 섭취 슬롯으로 과한 허기를 막습니다.", ingredients: ["프로틴 파우더"] },
           { meal: "프로틴 쉐이크 + 견과 소량", description: "지방은 보조적으로 소량 활용할 수 있습니다.", ingredients: ["프로틴 파우더", "견과류"] }
         ],
         meal5: [
@@ -2392,6 +2392,7 @@
             <div>
               <div class="meal-time">${getMealTime(meal.id)}</div>
               <div class="meal-label" data-meal-label="${meal.id}">${meal.label}</div>
+              <p class="section-caption" style="margin-top:4px;">${meal.caption || ""}</p>
               <div class="meal-badges" data-meal-policy="${meal.id}"></div>
             </div>
             <button class="meal-check" type="button" aria-label="${meal.label} 완료 체크" data-toggle-meal="${meal.id}"></button>
@@ -2411,7 +2412,8 @@
         <label class="time-row">
           <div>
             <strong>${meal.label}</strong>
-            <p class="section-caption">${getMealTime(meal.id)} 기본값</p>
+            <p class="section-caption">${meal.caption || ""}</p>
+            <p class="subtle-note">${getMealTime(meal.id)} 기본값</p>
           </div>
           <input type="time" data-reminder-time="${meal.id}" value="${getMealTime(meal.id)}" />
         </label>
@@ -3922,7 +3924,7 @@
     }
 
     function getDisplayMealName(dateKey, mealId) {
-      if (isFastingDay(dateKey) && mealId === "meal3") return "단식";
+      if (isFastingDay(dateKey) && mealId === "meal2") return "단식";
       const meal = MEALS.find((item) => item.id === mealId);
       return meal ? meal.label : "";
     }
