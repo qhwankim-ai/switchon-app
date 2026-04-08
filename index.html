@@ -1322,7 +1322,7 @@
           <div class="compact-summary-status" id="compactPlanStatus">설정 필요</div>
         </div>
         <div class="compact-summary-side">
-          <span class="compact-summary-metric" id="compactMetric">0 / 5</span>
+          <span class="compact-summary-metric" id="compactMetric">0 / 4</span>
         </div>
       </div>
     </div>
@@ -1382,11 +1382,11 @@
           <div class="metric">
             <div class="metric-label">완료한 식사</div>
             <div class="metric-value" id="completedMealsValue">0회</div>
-            <div class="metric-sub">정해진 5회 구조 기준</div>
+            <div class="metric-sub">정해진 4슬롯 구조 기준</div>
           </div>
           <div class="metric">
             <div class="metric-label">남은 식사</div>
-            <div class="metric-value" id="remainingMealsValue">5회</div>
+            <div class="metric-value" id="remainingMealsValue">4회</div>
             <div class="metric-sub">빠뜨리지 않는 것이 우선입니다</div>
           </div>
           <div class="metric">
@@ -1450,9 +1450,9 @@
         <div class="card-header">
           <div>
             <h2 class="section-title" id="progressTitle">일일 진행</h2>
-            <p class="section-caption">식사 슬롯 5개를 기준으로 하루 성공률을 계산합니다.</p>
+            <p class="section-caption">식사 슬롯 4개를 기준으로 하루 성공률을 계산합니다.</p>
           </div>
-          <span class="status-pill" id="progressMeta">0 / 5 완료</span>
+          <span class="status-pill" id="progressMeta">0 / 4 완료</span>
         </div>
         <div class="progress-wrap">
           <div class="progress-track" aria-hidden="true">
@@ -1645,8 +1645,8 @@
           <div>
             <div class="metric-label">운영 모드</div>
             <div class="segmented-control" id="protocolModeControl">
-              <button class="seg-btn" type="button" data-protocol-mode="standard">표준형</button>
-              <button class="seg-btn" type="button" data-protocol-mode="flexible">유연형</button>
+              <button class="seg-btn" type="button" data-protocol-mode="standard">기본형 (10:00 시작)</button>
+              <button class="seg-btn" type="button" data-protocol-mode="flexible">유연형 시작 (08:00 시작)</button>
             </div>
           </div>
           <div class="switch-row">
@@ -1837,15 +1837,18 @@
     const APP_TITLE = "스위치온 루틴";
     const STORAGE_KEY = "switchon-routine-v1";
     const MEALS = [
-      { id: "meal1", time: "08:00", label: "프로틴 쉐이크" },
-      { id: "meal2", time: "11:00", label: "프로틴 쉐이크" },
-      { id: "meal3", time: "14:00", label: "점심" },
-      { id: "meal4", time: "17:00", label: "프로틴" },
-      { id: "meal5", time: "19:30", label: "저녁" }
+      { id: "meal1", time: "10:00", label: "오전 단백질" },
+      { id: "meal2", time: "13:30", label: "점심" },
+      { id: "meal3", time: "17:00", label: "오후 단백질" },
+      { id: "meal4", time: "19:30", label: "저녁" }
     ];
+    const MEAL_TIME_PRESETS = {
+      standard: { meal1: "10:00", meal2: "13:30", meal3: "17:00", meal4: "19:30" },
+      flexible: { meal1: "08:00", meal2: "12:00", meal3: "16:00", meal4: "19:30" }
+    };
     const RULES = [
       "설탕 / 과당 금지",
-      "하루 단백질 4회",
+      "단백질 2회 + 일반식 2회",
       "배고픔이 아니라 시간표 기준 식사",
       "채소는 자유롭게",
       "수면 보호",
@@ -1857,7 +1860,7 @@
         summary: "탄수화물을 낮추고 식사 구조를 고정하는 시기입니다.",
         points: [
           "저탄수 중심으로 정리합니다.",
-          "단백질 섭취는 4회 리듬을 우선합니다.",
+          "단백질 2회 + 식사 2회 리듬을 우선합니다.",
           "채소는 비교적 자유롭게 활용합니다.",
           "설탕과 과당은 끊고, 루틴 안정에 집중합니다."
         ]
@@ -2046,7 +2049,7 @@
         summary: "1~3일차와 4~7일차를 구분해 부담을 조절하는 적응 주간입니다.",
         points: [
           "1~3일차는 기본 권장 구간이며 당질 제한을 가장 강하게 둡니다.",
-          "프로틴 쉐이크 4회, 두부·플레인 요거트·그릭요거트·건강한 지방을 활용할 수 있습니다.",
+          "오전·오후 단백질 2회와 점심·저녁 2회 구조를 유지합니다.",
           "4~7일차부터는 점심 1회를 일반식으로 두고 밥을 포함할 수 있습니다.",
           "숙련자는 1일차를 24시간 단식처럼 운영할 수 있지만 선택 사항입니다.",
           "무조건 버티기보다 구조를 유지하는 것이 더 중요합니다."
@@ -2172,7 +2175,7 @@
           { meal: "연두부 + 계란 + 고식이섬유 채소", description: "1~3일차는 기본 권장 구간일 뿐 절대 구간은 아닙니다.", ingredients: ["연두부", "계란", "채소"] }
         ],
         meal4: [
-          { meal: "프로틴 쉐이크", description: "4회 단백질 리듬을 유지해 과한 허기를 막습니다.", ingredients: ["프로틴 파우더"] },
+          { meal: "프로틴 쉐이크", description: "오전 단백질 슬롯으로 과한 허기를 막습니다.", ingredients: ["프로틴 파우더"] },
           { meal: "프로틴 쉐이크 + 견과 소량", description: "지방은 보조적으로 소량 활용할 수 있습니다.", ingredients: ["프로틴 파우더", "견과류"] }
         ],
         meal5: [
@@ -2296,12 +2299,23 @@
       }
     };
 
+    Object.keys(PROTOCOL_SUGGESTIONS).forEach((phaseKey) => {
+      const phase = PROTOCOL_SUGGESTIONS[phaseKey];
+      PROTOCOL_SUGGESTIONS[phaseKey] = {
+        ...phase,
+        meal1: phase.meal1 || [],
+        meal2: phase.meal3 || phase.meal2 || [],
+        meal3: phase.meal4 || phase.meal3 || [],
+        meal4: phase.meal5 || phase.meal4 || []
+      };
+    });
+
     const DEFAULT_STATE = {
       selectedDate: formatDateKey(new Date()),
       startDate: "",
       guideWeekTab: 0,
       remindersEnabled: false,
-      reminderTimes: Object.fromEntries(MEALS.map((meal) => [meal.id, meal.time])),
+      reminderTimes: getDefaultReminderTimes(),
       favorites: [],
       suggestionRotation: {},
       protocol: { ...DEFAULT_PROTOCOL_SETTINGS },
@@ -2376,7 +2390,7 @@
         <article class="meal-card" id="card-${meal.id}" data-meal-id="${meal.id}">
           <div class="meal-top">
             <div>
-              <div class="meal-time">${meal.time}</div>
+              <div class="meal-time">${getMealTime(meal.id)}</div>
               <div class="meal-label" data-meal-label="${meal.id}">${meal.label}</div>
               <div class="meal-badges" data-meal-policy="${meal.id}"></div>
             </div>
@@ -2397,11 +2411,21 @@
         <label class="time-row">
           <div>
             <strong>${meal.label}</strong>
-            <p class="section-caption">${meal.time} 기본값</p>
+            <p class="section-caption">${getMealTime(meal.id)} 기본값</p>
           </div>
-          <input type="time" data-reminder-time="${meal.id}" value="${state.reminderTimes[meal.id] || meal.time}" />
+          <input type="time" data-reminder-time="${meal.id}" value="${getMealTime(meal.id)}" />
         </label>
       `).join("");
+    }
+
+    function getMealTime(mealId) {
+      const fallback = MEALS.find((meal) => meal.id === mealId)?.time || "00:00";
+      return state.reminderTimes[mealId] || fallback;
+    }
+
+    function getDefaultReminderTimes(mode = "standard") {
+      const preset = MEAL_TIME_PRESETS[mode] || MEAL_TIME_PRESETS.standard;
+      return Object.fromEntries(MEALS.map((meal) => [meal.id, preset[meal.id] || meal.time]));
     }
 
     function attachEvents() {
@@ -2499,6 +2523,7 @@
       document.querySelectorAll("[data-protocol-mode]").forEach((button) => {
         button.addEventListener("click", () => {
           state.protocol.mode = button.dataset.protocolMode;
+          state.reminderTimes = getDefaultReminderTimes(state.protocol.mode);
           saveAndRender(false);
         });
       });
@@ -2801,7 +2826,7 @@
           <article class="suggestion-card ${context.fastingSlot ? "fasting-day" : ""}">
             <div class="suggestion-top">
               <div>
-                <div class="meal-time" style="font-size:22px;">${meal.time}</div>
+                <div class="meal-time" style="font-size:22px;">${getMealTime(meal.id)}</div>
                 <div class="meal-label">${meal.label}</div>
                 <div class="suggestion-badges">${getPolicyBadges(context).join("")}</div>
               </div>
@@ -2878,7 +2903,7 @@
             <div class="favorite-top">
               <div>
                 <div class="favorite-title">${favorite.name}</div>
-                <p class="favorite-copy">${meal ? `${meal.time} ${meal.label}` : "식사 슬롯 미지정"}</p>
+                <p class="favorite-copy">${meal ? `${getMealTime(meal.id)} ${meal.label}` : "식사 슬롯 미지정"}</p>
               </div>
               <span class="inline-status">자주 사용</span>
             </div>
@@ -3016,7 +3041,7 @@
       }).length;
       const dinnerStrength = history.filter((item) => {
         ensureDayData(item.dateKey);
-        return state.days[item.dateKey].meals.meal5.completed;
+        return state.days[item.dateKey].meals.meal4.completed;
       }).length;
       const selectedDay = state.days[state.selectedDate];
       if (breakfastMisses >= 3) return "아침 체크 누락이 반복됩니다. 첫 식사부터 바로 체크하세요.";
@@ -3205,7 +3230,7 @@
         const lunchOptions = getAdaptiveLunchOptions(context);
         if (lunchOptions.length) return lunchOptions;
       }
-      if (slot === "meal5") {
+      if (slot === "meal4") {
         const dinnerOptions = getAdaptiveDinnerOptions(context);
         if (dinnerOptions.length) return dinnerOptions;
       }
@@ -3221,12 +3246,12 @@
       const conditionState = getConditionState(dateKey);
       const strategy = getAdaptiveStrategy(dateKey);
       const fastingDay = isFastingDay(dateKey);
-      const fastingSlot = fastingDay && slot === "meal3";
+      const fastingSlot = fastingDay && slot === "meal2";
       const flexibleEarlyExit = shouldUseWeek1RelaxedLogic(dateKey);
       const carbSwapAllowed = weekNumber >= 2 && weekNumber <= 3 && strategy.allowDinnerCarb;
       const activityDinnerAllowed = weekNumber >= 3 && (state.protocol.allowDinnerCarbsForActivity || conditionState.exerciseStatus === "on");
       let dinnerMode = "";
-      if (slot === "meal5") {
+      if (slot === "meal4") {
         if (phase === "maintenance") dinnerMode = "유지기 일반식";
         else if (weekNumber === 2 || weekNumber === 3) {
           if (carbSwapAllowed) dinnerMode = "수면 고려 저녁 탄수화물 허용";
@@ -3377,7 +3402,7 @@
 
     function getAdaptiveDinnerOptions(context) {
       if (context.phase === "maintenance") {
-        return PROTOCOL_SUGGESTIONS.maintenance.meal5;
+        return PROTOCOL_SUGGESTIONS.maintenance.meal4;
       }
       if (context.strategy.lightDinnerNeeded) {
         return [
@@ -3398,7 +3423,7 @@
         ];
       }
       if (context.weekNumber === 4) {
-        const base = PROTOCOL_SUGGESTIONS.week4.meal5.slice();
+        const base = PROTOCOL_SUGGESTIONS.week4.meal4.slice();
         if (state.protocol.allowWeek4Cheat) {
           base.push({ meal: "주말 점심 치팅 1회 고려", description: "1~3주를 잘 지켰을 때만 주말 점심 1회를 검토합니다. 초기 치팅은 준비기 재진입이 필요할 수 있습니다.", ingredients: ["선택 식사"] });
         }
@@ -3571,7 +3596,7 @@
       if (!state.remindersEnabled || Notification.permission !== "granted") return;
 
       MEALS.forEach((meal) => {
-        const time = state.reminderTimes[meal.id] || meal.time;
+        const time = getMealTime(meal.id);
         const delay = getDelayUntil(time);
         const timerId = setTimeout(() => {
           sendMealReminder(meal);
@@ -3585,7 +3610,7 @@
       const dateKey = formatDateKey(new Date());
       ensureDayData(dateKey);
       if (state.days[dateKey].meals[meal.id].completed) return;
-      sendNotification(`${meal.time} ${meal.label}`, "지금은 적게 먹는 것보다 정해진 구조를 지키는 것이 우선입니다.");
+      sendNotification(`${getMealTime(meal.id)} ${meal.label}`, "지금은 적게 먹는 것보다 정해진 구조를 지키는 것이 우선입니다.");
     }
 
     function sendTestNotification() {
@@ -3639,9 +3664,16 @@
       if (!state.days[dateKey]) {
         state.days[dateKey] = createEmptyDay();
       } else {
+        const legacyMeals = state.days[dateKey].meals || {};
+        const legacyMap = {
+          meal1: legacyMeals.meal1,
+          meal2: legacyMeals.meal3 || legacyMeals.meal2,
+          meal3: legacyMeals.meal4,
+          meal4: legacyMeals.meal5 || legacyMeals.meal4
+        };
         MEALS.forEach((meal) => {
           if (!state.days[dateKey].meals[meal.id]) {
-            state.days[dateKey].meals[meal.id] = { completed: false, food: "", memo: "" };
+            state.days[dateKey].meals[meal.id] = legacyMap[meal.id] || { completed: false, food: "", memo: "" };
           }
         });
         state.days[dateKey].responses = {
@@ -3832,7 +3864,7 @@
 
       if (isToday) {
         const overdueMeal = MEALS.find((meal) => {
-          const [hours, minutes] = meal.time.split(":").map(Number);
+          const [hours, minutes] = getMealTime(meal.id).split(":").map(Number);
           const slotTime = new Date(now);
           slotTime.setHours(hours, minutes, 0, 0);
           return now >= slotTime && !day.meals[meal.id].completed;
@@ -3840,7 +3872,7 @@
         if (overdueMeal) {
           return {
             headline: "지금 해야 할 것",
-            primary: `지금 기록이 필요한 식사: ${overdueMeal.time} ${getDisplayMealName(dateKey, overdueMeal.id)}`,
+            primary: `지금 기록이 필요한 식사: ${getMealTime(overdueMeal.id)} ${getDisplayMealName(dateKey, overdueMeal.id)}`,
             secondary: "지금 체크하세요",
             goal,
             progress
@@ -3848,7 +3880,7 @@
         }
 
         const nextMeal = MEALS.find((meal) => {
-          const [hours, minutes] = meal.time.split(":").map(Number);
+          const [hours, minutes] = getMealTime(meal.id).split(":").map(Number);
           const slotTime = new Date(now);
           slotTime.setHours(hours, minutes, 0, 0);
           return now < slotTime && !day.meals[meal.id].completed;
@@ -3856,8 +3888,8 @@
         if (nextMeal) {
           return {
             headline: "다음 식사를 준비하세요",
-            primary: `다음 식사: ${nextMeal.time} ${getDisplayMealName(dateKey, nextMeal.id)}`,
-            secondary: `다음 식사까지 ${getTimeUntilMeal(nextMeal.time, now)} 남음`,
+            primary: `다음 식사: ${getMealTime(nextMeal.id)} ${getDisplayMealName(dateKey, nextMeal.id)}`,
+            secondary: `다음 식사까지 ${getTimeUntilMeal(getMealTime(nextMeal.id), now)} 남음`,
             goal,
             progress
           };
@@ -3886,7 +3918,7 @@
 
     function getCoreGoalCopy(dateKey) {
       const day = state.days[dateKey];
-      return `단백질 4회 + 물 ${Number(day.water || 0) >= 2 ? "2L 완료" : "2L"}`;
+      return `단백질 2회 + 식사 2회 · 물 ${Number(day.water || 0) >= 2 ? "2L 완료" : "2L"}`;
     }
 
     function getDisplayMealName(dateKey, mealId) {
@@ -3900,12 +3932,12 @@
       const meal = MEALS.find((item) => item.id === mealId);
       if (!meal) return "지금 체크하세요";
       if (!day.meals[mealId].completed) {
-        return `기록하기 · ${meal.time} 슬롯`;
+        return `기록하기 · ${getMealTime(meal.id)} 슬롯`;
       }
       const currentIndex = MEALS.findIndex((item) => item.id === mealId);
       const nextPending = MEALS.slice(currentIndex + 1).find((item) => !day.meals[item.id].completed);
       if (nextPending) {
-        return `다음 식사: ${nextPending.time} ${getDisplayMealName(dateKey, nextPending.id)}`;
+        return `다음 식사: ${getMealTime(nextPending.id)} ${getDisplayMealName(dateKey, nextPending.id)}`;
       }
       return "오늘 식사 구조 완료";
     }
@@ -4016,7 +4048,7 @@
 
       const now = new Date();
       return MEALS.filter((meal) => {
-        const [hours, minutes] = (state.reminderTimes[meal.id] || meal.time).split(":").map(Number);
+        const [hours, minutes] = getMealTime(meal.id).split(":").map(Number);
         const slotTime = new Date(selected);
         slotTime.setHours(hours, minutes, 0, 0);
         return now >= slotTime && !day.meals[meal.id].completed;
@@ -4059,7 +4091,7 @@
         return {
           ...structuredClone(DEFAULT_STATE),
           ...parsed,
-          reminderTimes: { ...DEFAULT_STATE.reminderTimes, ...(parsed.reminderTimes || {}) },
+          reminderTimes: { ...getDefaultReminderTimes((parsed.protocol || {}).mode || DEFAULT_PROTOCOL_SETTINGS.mode), ...(parsed.reminderTimes || {}) },
           favorites: Array.isArray(parsed.favorites) ? parsed.favorites : [],
           suggestionRotation: parsed.suggestionRotation || {},
           protocol: { ...DEFAULT_PROTOCOL_SETTINGS, ...(parsed.protocol || {}) },
